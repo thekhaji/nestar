@@ -12,18 +12,14 @@ export class MemberService {
     constructor(@InjectModel("Member") private readonly memberModel: Model<Member>){}
     public async signup(input: MemberInput): Promise<Member>{
         //TODO Hash password
-        
-
         try {
             const result = await this.memberModel.create(input);
             //TODO Authentication via TOKEN
             return result;
         } catch (err) {
-            console.log("Error, Service.model", err);
-            throw new BadRequestException(err)
+            console.log("Error, Service.model", err.message);
+            throw new BadRequestException(Message.USED_MEMBER_NICK_OR_PHONE);
         }
-
-        
     }
 
     public async login(input: LoginInput): Promise<Member>{
