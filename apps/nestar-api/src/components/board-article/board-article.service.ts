@@ -59,7 +59,8 @@ export class BoardArticleService {
                 tartgetBoardArticle.articleViews++;
             }
 
-            //meLiked
+            const likeInput = {memberId: memberId, likeRefId: articleId, likeGroup: LikeGroup.ARTICLE};
+            tartgetBoardArticle.meLiked = await this.likeService.checkLikeExistence(likeInput);
         }
 
         tartgetBoardArticle.memberData = await this.memberService.getMember(null, tartgetBoardArticle.memberId);
