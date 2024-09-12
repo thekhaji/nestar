@@ -4,7 +4,7 @@ export enum Message{
     SOMETHING_WENT_RONG = "Something Went Wrong!",
     NO_DATA_FOUND = "No data is found!",
     CREATE_FAILED = "Create is failed!",
-    UPDATE_FAILED = "Update is fauled!",
+    UPDATE_FAILED = "Update is failed!",
     REMOVE_FAILED = "Remove failed!",
     UPLOAD_FAILED = "Upload failed",
     BAD_REQUEST = "Bad Request",
