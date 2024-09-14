@@ -15,6 +15,7 @@ import { LikeGroup } from '../../libs/enums/like.enum';
 import { LikeModule } from '../like/like.module';
 import { LikeService } from '../like/like.service';
 import { Follower, Following, MeFollowed } from '../../libs/dto/follow/follow';
+import { lookupAuthMemberLiked } from '../../libs/config';
 
 
 @Injectable()
@@ -141,8 +142,12 @@ export class MemberService {
             {$sort: sort},
             {
                 $facet: {
-                    list: [{$skip: (input.page-1)*input.limit}, {$limit: input.limit}],
-                    metaCounter: [{$count: 'total'}]
+                    list: [
+                        {$skip: (input.page-1)*input.limit}, 
+                        {$limit: input.limit},
+                        lookupAuthMemberLiked(memberId),
+                    ],
+                    metaCounter: [{$count: 'total'}],
                 }
             }
         ]).exec();
