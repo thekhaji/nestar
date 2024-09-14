@@ -3,7 +3,7 @@ import { FollowService } from './follow.service';
 import { UseGuards } from '@nestjs/common';
 import { Query } from '@nestjs/graphql';
 import { AuthGuard } from '../auth/guards/auth.guard';
-import { Follower, Followings } from '../../libs/dto/follow/follow';
+import { Follower, Followers, Followings } from '../../libs/dto/follow/follow';
 import { AuthMember } from '../auth/decorators/authMember.decorator';
 import { ObjectId } from 'mongoose';
 import { shapeIntoMongoObjectId } from '../../libs/config';
