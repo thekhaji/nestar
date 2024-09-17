@@ -68,7 +68,7 @@ export class BoardArticleResolver {
     public async likeTargetBoardArticle(
         @Args('articleId') input: string,
         @AuthMember('_id') memberId: ObjectId,
-    ): Promise<Member>{
+    ): Promise<BoardArticle>{
         console.log("Mutation: likeTargetBoardArticle");
         const likeRefId = shapeIntoMongoObjectId(input);
         return await this.boardArticleService.likeTargetBoardArticle(memberId, likeRefId);

@@ -89,7 +89,7 @@ export const lookupAuthMemberFollowed = (input: LookupAuthMemberFollowed) => {
                         myFollowing: '$$localMyFavorite',
                     },
                 },
-            ],
+            ],                                     
             as: 'meFollowed',
         },
     };
