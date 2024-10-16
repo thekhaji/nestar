@@ -10,7 +10,7 @@ import { lookupAuthMemberFollowed, lookupAuthMemberLiked, lookupFollowerData, lo
 
 @Injectable()
 export class FollowService {
-    constructor(
+    constructor(  
         @InjectModel('Follow') private readonly followModel: Model<Follower | Following>,
         private readonly memberService: MemberService,
 
@@ -51,7 +51,7 @@ export class FollowService {
         const result = await this.followModel.findOneAndDelete({
             followingId: followingId,
             followerId: followerId,
-        });
+        }).exec();
 
         if(!result) throw new InternalServerErrorException(Message.NO_DATA_FOUND);
 
