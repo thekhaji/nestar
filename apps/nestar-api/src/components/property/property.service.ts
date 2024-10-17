@@ -223,36 +223,66 @@ export class PropertyService {
         return result;
 
     }
+    public async getAllPropertiesByAdmin(input: AllPropertiesInquiry): Promise<Properties> {
+		const { propertyStatus, propertyLocationList } = input.search;
+		const match: T = {};
+		const sort: T = { [input?.sort ?? 'createdAt']: input?.direction ?? Direction.DESC };
 
-    public async getAllPropertiesByAdmin(input: AllPropertiesInquiry): Promise<Properties>{
-        const {propertyStatus, propertyLocationList} = input.search;
-        const match: T = {};
-        const sort: T = { [input?.sort ?? 'createdAt']: input?.direction ?? Direction.DESC };
+		if (propertyStatus) match.propertyStatus = propertyStatus;
+		if (propertyLocationList) match.propertyLocation = { $$in: propertyLocationList };
 
-        if(propertyStatus) match.propertyStatus = propertyStatus;
-        if(propertyLocationList) match.propertyLocationList = {$in: propertyLocationList};
+		const result = await this.propertyModel
+			.aggregate([
+				{ $match: match },
+				{ $sort: sort },
+				{
+					$facet: {
+						list: [
+							{ $skip: (input.page - 1) * input.limit },
+							{ $limit: input.limit },
+							lookupMember,
+							{ $unwind: '$memberData' },
+						],
+						metaCounter: [{ $count: 'total' }],
+					},
+				},
+			])
+			.exec();
 
-        const result = await this.propertyModel.aggregate([
-            {$match: match},
-            {$sort: sort},
-            {
-                $facet: {
-                    list: [
-                        {$skip: (input.page - 1) * input.limit},
-                        { $limit: input.limit},
-                        lookupMember,
-                        {$unwind: '$memberData'},
-                    ],
-                    metaCounter: [{ $count: 'total' }],
-                }
-            },
-        ]).exec();
+		if (!result.length) throw new InternalServerErrorException(Message.NO_DATA_FOUND);
+
+		return result[0];
+	}
+
+    // public async getAllPropertiesByAdmin(input: AllPropertiesInquiry): Promise<Properties>{
+    //     const {propertyStatus, propertyLocationList} = input.search;
+    //     const match: T = {};
+    //     const sort: T = { [input?.sort ?? 'createdAt']: input?.direction ?? Direction.DESC };
+
+    //     if(propertyStatus) match.propertyStatus = propertyStatus;
+    //     if(propertyLocationList) match.propertyLocationList = {$in: propertyLocationList};
+
+    //     const result = await this.propertyModel.aggregate([
+    //         {$match: match},
+    //         {$sort: sort},
+    //         {
+    //             $facet: {
+    //                 list: [
+    //                     {$skip: (input.page - 1) * input.limit},
+    //                     { $limit: input.limit},
+    //                     lookupMember,
+    //                     {$unwind: '$memberData'},
+    //                 ],
+    //                 metaCounter: [{ $count: 'total' }],
+    //             }
+    //         },
+    //     ]).exec();
         
-        if(!result.length) throw new InternalServerErrorException(Message.NO_DATA_FOUND);
+    //     if(!result.length) throw new InternalServerErrorException(Message.NO_DATA_FOUND);
         
-        return result[0];
+    //     return result[0];
 
-    }
+    // }
 
     public async updatePropertyByAdmin(input: PropertyUpdate): Promise<Property>{
         let {propertyStatus, soldAt, deletedAt} = input;
